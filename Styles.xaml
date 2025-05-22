@@ -1,0 +1,703 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0">
+
+    <!--  Button Style  -->
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonFaceKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonTextKey}}" />
+        <!--  Make default border same as background to appear borderless  -->
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonFaceKey}}" />
+        <Setter Property="BorderThickness" Value="1" />
+
+        <!--  Adjust Padding for internal spacing  -->
+        <Setter Property="Padding" Value="8,4" />
+
+        <!--  Ensure a minimum size for the button  -->
+        <Setter Property="MinHeight" Value="15" />
+        <!--  Optionally, add a MinWidth if buttons with short text are too narrow  -->
+        <!-- <Setter Property="MinWidth" Value="75" /> -->
+
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                      Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter"
+                          Margin="{TemplateBinding Padding}"
+                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                          RecognizesAccessKey="True"
+                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseOverBackgroundBeginKey}}" />
+                            <!--  Use a lighter/outline brush for the border on hover  -->
+                            <!--<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlOutlineKey}}" />-->
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.AccentLightKey}}" />
+
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarTextHoverKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBackgroundBeginKey}}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBorderKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarTextActiveKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBackgroundKey}}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBorderKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  TextBox Style  -->
+    <Style TargetType="TextBox">
+        <!--  Default State  -->
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.AccentBorderKey}}" />
+        <!--  Standard border is like current active  -->
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="3,2" />
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="MinHeight" Value="25" />
+        <Setter Property="CaretBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightKey}}" />
+        <Setter Property="AllowDrop" Value="true" />
+        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBoxBase">
+                    <!--  Target TextBoxBase for broader applicability (e.g., RichTextBox)  -->
+                    <Border x:Name="border"
+                      Padding="{TemplateBinding Padding}"
+                      Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                          Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseOverBackgroundBeginKey}}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseOverBorderKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBorderKey}}" />
+                            <!--  Optional: Change background on focus if desired  -->
+                            <!-- <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseDownBackgroundKey}}" /> -->
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBackgroundKey}}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBorderKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsReadOnly" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBackgroundKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  ComboBox Style  -->
+    <!--  Style for the ComboBox ToggleButton (Down Arrow area)  -->
+    <Style x:Key="ComboBoxDownArrowToggleStyle" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="ToggleButtonBorder"
+                      Background="{TemplateBinding Background}"
+                      SnapsToDevicePixels="True">
+                        <Path x:Name="Arrow"
+                          Width="8" Height="4"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          Data="M 0 0 L 4 4 L 8 0 Z"
+                          Fill="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxGlyphKey}}"
+                          Stretch="Fill" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <!--  Use Button's Pressed/Active Background and Arrow Fill on Hover  -->
+                            <Setter TargetName="ToggleButtonBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBackgroundBeginKey}}" />
+                            <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarTextActiveKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <!--  When dropdown is open  -->
+                            <Setter TargetName="ToggleButtonBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBackgroundBeginKey}}" />
+                            <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarTextActiveKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledGlyphKey}}" />
+                            <Setter TargetName="ToggleButtonBorder" Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Style for ComboBoxItem (Dropdown items)  -->
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Padding" Value="4,3" />
+        <Setter Property="MinHeight" Value="22" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border Name="Bd"
+                      Padding="{TemplateBinding Padding}"
+                      Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      SnapsToDevicePixels="true">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightTextKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  ComboBox Style Definition for ToggleButton style  -->
+    <Style TargetType="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxBorderKey}}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="MinHeight" Value="25" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid x:Name="MainGrid">
+                        <Border x:Name="MainBorder"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"
+                          SnapsToDevicePixels="True">
+                            <Grid x:Name="PART_RootGridInner">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter x:Name="ContentSite"
+                                  Grid.Column="0"
+                                  Margin="{TemplateBinding Padding}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Content="{TemplateBinding SelectionBoxItem}"
+                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                  IsHitTestVisible="False"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+                                <ToggleButton x:Name="DropDownToggle"
+                                  Grid.Column="1"
+                                  ClickMode="Press" Focusable="False"
+                                  IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                  Style="{StaticResource ComboBoxDownArrowToggleStyle}" />
+                            </Grid>
+                        </Border>
+
+                        <Popup x:Name="PART_Popup"
+                          AllowsTransparency="True" Focusable="False"
+                          IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                          Placement="Bottom"
+                          PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                            <Border x:Name="DropDownBorder"
+                              MinWidth="{Binding Path=ActualWidth, ElementName=MainBorder}"
+                              MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                              Background="{DynamicResource {x:Static vsshell:VsBrushes.DropDownBackgroundKey}}"
+                              BorderBrush="{DynamicResource {x:Static vsshell:VsBrushes.DropDownBorderKey}}"
+                              BorderThickness="1">
+                                <ScrollViewer x:Name="DropDownScrollViewer" SnapsToDevicePixels="True">
+                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="DropDownToggle" Property="IsEnabled" Value="false" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="MainBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseOverBackgroundBeginKey}}" />
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseOverBorderKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsDropDownOpen" Value="True">
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBorderKey}}" />
+                            <Setter TargetName="MainBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseDownBackgroundKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="MainBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBackgroundKey}}" />
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBorderKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  ListViewItem Style  -->
+    <Style TargetType="ListViewItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+        <!--  Use a transparent border by default but reserve space if a border appears on selection/hover  -->
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="4,3" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <!--  Ensures ContentPresenter stretches  -->
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MinHeight" Value="22" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border x:Name="Bd"
+                      Padding="{TemplateBinding Padding}"
+                      Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!--  Hover State  -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightTextKey}}" />
+                <!--  Optional: If you want a border on hover, uncomment and choose a brush  -->
+                <!-- <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlOutlineKey}}"/> -->
+            </Trigger>
+
+            <!--  Selected State (when ListView has focus)  -->
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSelected" Value="True" />
+                    <Condition Property="Selector.IsSelectionActive" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightTextKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlOutlineKey}}" />
+            </MultiTrigger>
+
+            <!--  Selected State (when ListView does NOT have focus)  -->
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSelected" Value="True" />
+                    <Condition Property="Selector.IsSelectionActive" Value="False" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonFaceKey}}" />
+                <!--  Inactive selection background  -->
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+                <!--  Standard text for inactive selection  -->
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonFaceKey}}" />
+                <!--  Border matches background for "borderless" inactive look  -->
+            </MultiTrigger>
+
+            <!--  Disabled State  -->
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                <!--  Optional: Change background for disabled item if needed  -->
+                <!-- <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBackgroundKey}}"/> -->
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  ListView Style  -->
+    <Style TargetType="ListView">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBorderKey}}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+        <!--  Enable UI Virtualization for performance with many items  -->
+        <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
+        <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <!--  TextBlock Style  -->
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+    </Style>
+
+    <!--  Border Style  -->
+    <Style TargetType="Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+    </Style>
+
+    <!--  CheckBox Style  -->
+    <Style TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxBackgroundKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxBorderKey}}" />
+        <!--  Border for the box part  -->
+        <Setter Property="Padding" Value="2,0,0,0" />
+        <!--  Space between check box and content  -->
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="MinHeight" Value="20" />
+        <!--  Ensure decent clickable height  -->
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid Background="Transparent">
+                        <!--  Main container, transparent for hit testing  -->
+                        <StackPanel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                          Orientation="Horizontal">
+                            <!--  The CheckBox's box  -->
+                            <Border x:Name="BoxBorder"
+                              Width="14" Height="14"
+                              Background="{TemplateBinding Background}"
+                              BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="1" SnapsToDevicePixels="True">
+                                <!--  The Checkmark Path  -->
+                                <Path x:Name="CheckMark"
+                                  Width="8" Height="7"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  Data="M1.5,3.5 L3.5,5.5 L6.5,1.5" Stretch="Fill"
+                                  Stroke="{DynamicResource {x:Static vsshell:VsBrushes.HighlightTextKey}}"
+                                  StrokeThickness="1.5" Visibility="Collapsed" />
+                            </Border>
+                            <!--  Content (Text next to CheckBox)  -->
+                            <ContentPresenter x:Name="Content"
+                              Margin="{TemplateBinding Padding}"
+                              VerticalAlignment="Center"
+                              RecognizesAccessKey="True"
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </StackPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!--  IsMouseOver State  -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BoxBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseOverBackgroundBeginKey}}" />
+                            <Setter TargetName="BoxBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseOverBorderKey}}" />
+                        </Trigger>
+
+                        <!--  IsPressed State (while clicking)  -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="BoxBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseDownBackgroundKey}}" />
+                            <Setter TargetName="BoxBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseDownBorderKey}}" />
+                        </Trigger>
+
+                        <!--  IsChecked State  -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="BoxBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightKey}}" />
+                            <Setter TargetName="BoxBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightKey}}" />
+                        </Trigger>
+
+                        <!--  IsChecked AND IsMouseOver State (to ensure hover on checked state is correct)  -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="BoxBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightKey}}" />
+                            <Setter TargetName="BoxBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlOutlineKey}}" />
+                            <Setter TargetName="CheckMark" Property="Stroke" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightTextKey}}" />
+                        </MultiTrigger>
+
+                        <!--  IsEnabled="False" State  -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                            <Setter TargetName="BoxBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBackgroundKey}}" />
+                            <Setter TargetName="BoxBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBorderKey}}" />
+                            <Setter TargetName="CheckMark" Property="Stroke" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  DatePicker Style  -->
+    <Style x:Key="DatePickerCalendarButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxGlyphKey}}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="5,0" />
+        <!--  Horizontal padding for the icon  -->
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                      Padding="{TemplateBinding Padding}"
+                      Background="{TemplateBinding Background}"
+                      SnapsToDevicePixels="True">
+                        <TextBlock x:Name="Glyph"
+                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                          FontFamily="Segoe UI Symbol" FontSize="12"
+                          Foreground="{TemplateBinding Foreground}"
+                          Text="📅" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseOverBackgroundBeginKey}}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarTextHoverKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBackgroundBeginKey}}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarTextActiveKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledGlyphKey}}" />
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  DatePicker Style  -->
+    <Style TargetType="DatePicker">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxBackgroundKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxBorderKey}}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="3,2" />
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="MinHeight" Value="25" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DatePicker">
+                    <Border x:Name="MainBorder"
+                      Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  DatePickerTextBox is the input area  -->
+                            <DatePickerTextBox x:Name="PART_TextBox"
+                              Grid.Column="0"
+                              Padding="{TemplateBinding Padding}"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              Background="Transparent" BorderThickness="0"
+                              Focusable="{TemplateBinding Focusable}"
+                              Foreground="{TemplateBinding Foreground}"
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+                            <!--  Button to open the calendar  -->
+                            <Button x:Name="PART_Button"
+                              Grid.Column="1"
+                              VerticalAlignment="Stretch"
+                              Focusable="False"
+                              IsEnabled="{TemplateBinding IsEnabled}"
+                              Style="{StaticResource DatePickerCalendarButtonStyle}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="MainBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseOverBackgroundBeginKey}}" />
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseOverBorderKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsDropDownOpen" Value="True">
+                            <!--  When calendar is open  -->
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBorderKey}}" />
+                            <Setter TargetName="MainBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxMouseDownBackgroundKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="MainBorder" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBackgroundKey}}" />
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBorderKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBorderKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  StackPanel Style  -->
+    <Style TargetType="StackPanel">
+        <Setter Property="Margin" Value="0,0,0,5" />
+    </Style>
+
+    <!--  Grid Style  -->
+    <Style TargetType="Grid">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <!--  ScrollViewer Style  -->
+    <Style TargetType="ScrollViewer">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
+    </Style>
+
+    <!--  Separator Style  -->
+    <Style TargetType="Separator">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Margin" Value="0,5,0,5" />
+    </Style>
+
+    <!--  TabControl Style  -->
+    <Style TargetType="TabControl">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBorderKey}}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid ClipToBounds="true" KeyboardNavigation.TabNavigation="Local" SnapsToDevicePixels="true">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TabPanel x:Name="HeaderPanel"
+                          Grid.Row="0"
+                          Margin="0,0,0,-1" Panel.ZIndex="1"
+                          Background="Transparent" IsItemsHost="true" KeyboardNavigation.TabIndex="1" />
+                        <Border x:Name="ContentPanel"
+                          Grid.Row="1"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"
+                          KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2"
+                          KeyboardNavigation.TabNavigation="Local">
+                            <ContentPresenter x:Name="PART_SelectedContentHost"
+                              Margin="{TemplateBinding Padding}"
+                              ContentSource="SelectedContent"
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  TabItem Style   -->
+    <Style TargetType="TabItem">
+        <!--  Default State (Unselected, Not Hovered)  -->
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTabTextKey}}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1,1,1,0" />
+        <Setter Property="Padding" Value="8,3" />
+        <Setter Property="Margin" Value="0,0,1,0" />
+        <Setter Property="MinHeight" Value="25" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="MainBorder"
+                      Padding="{TemplateBinding Padding}"
+                      Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="ContentSite"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          ContentSource="Header" RecognizesAccessKey="True"
+                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!--  Active/Selected Tab: This is the primary definition.  -->
+            <!--  It has the border and transparent background. Hovering over it does no change.  -->
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTabTextKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBorderKey}}" />
+                <Setter Property="Panel.ZIndex" Value="1" />
+            </Trigger>
+
+            <!--  Hover over a Non-Selected Tab (This also serves as the "on press" visual)  -->
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSelected" Value="False" />
+                    <Condition Property="IsMouseOver" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTabMouseOverBackgroundBeginKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTabMouseOverTextKey}}" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <!--<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarMouseDownBorderKey}}" />-->
+            </MultiTrigger>
+
+            <!--  Disabled Tab  -->
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.GrayTextKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBackgroundKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ComboBoxDisabledBorderKey}}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>
